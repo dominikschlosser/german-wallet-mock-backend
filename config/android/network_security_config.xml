@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Use as the debug app's network security configuration. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain>localhost</domain>
+        <domain>10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

@@ -1,0 +1,11 @@
+German wallet local backend
+
+This project uses the original German National Wallet backend source under
+Apache License 2.0. The Kotlin source is compiled without changes.
+
+Original repository:
+https://github.com/german-national-wallet/de-eudi-wallet-backend
+
+The license is included in LICENSE and in the application JAR at
+META-INF/UPSTREAM-LICENSE. Git records the source revision through the
+upstream/backend submodule.

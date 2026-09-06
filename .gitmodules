@@ -1,0 +1,3 @@
+[submodule "upstream/backend"]
+	path = upstream/backend
+	url = https://github.com/german-national-wallet/de-eudi-wallet-backend.git

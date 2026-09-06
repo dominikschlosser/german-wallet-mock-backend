@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: wallet
+      POSTGRES_USER: wallet
+      POSTGRES_PASSWORD: local-wallet
+    volumes:
+      - postgres-state:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U wallet -d wallet"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  s3:
+    image: minio/minio:latest
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: local-wallet
+      MINIO_ROOT_PASSWORD: local-wallet-password
+    volumes:
+      - s3-state:/data
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:9000/minio/health/live]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  wallet-backend:
+    build:
+      context: .
+      args:
+        UPSTREAM_REVISION: ${UPSTREAM_REVISION:-}
+    environment:
+      MOCK_PUBLIC_URL: ${MOCK_PUBLIC_URL:-http://localhost:8080}
+      S3_ENDPOINT: http://s3:9000
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    ports:
+      - "${MOCK_BIND_ADDRESS:-127.0.0.1}:${MOCK_PORT:-8080}:8080"
+    volumes:
+      - hsm-state:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      s3:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8080/actuator/health]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+      start_period: 30s
+volumes:
+  postgres-state:
+  s3-state:
+  hsm-state:

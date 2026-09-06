@@ -1,0 +1,4 @@
+// Include last in the local DEV configuration. The empty expansion keeps
+// xcconfig from interpreting the URL's double slash as a comment.
+WALLET_HOST_URL = http:/$()/localhost:8080
+API_KEY = local-mock

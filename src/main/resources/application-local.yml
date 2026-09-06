@@ -1,0 +1,107 @@
+server:
+  port: 8080
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.security.autoconfigure.ReactiveUserDetailsServiceAutoConfiguration
+  r2dbc:
+    url: r2dbc:postgresql://postgres:5432/wallet
+    username: wallet
+    password: local-wallet
+  flyway:
+    url: jdbc:postgresql://postgres:5432/wallet
+    user: wallet
+    password: local-wallet
+  main:
+    banner-mode: "off"
+deployment:
+  environment: local
+mdvm:
+  enabled: true
+  issuer: ${MOCK_PUBLIC_URL}/v1/mdvm
+  mdvm-auth-prvk-prefix: mdvm-
+  mdvm-root-cert-path: file:/data/ca.pem
+mdvm-token:
+  issuer: ${MOCK_PUBLIC_URL}/v1/mdvm
+  mdvm-root-cert-path: file:/data/ca.pem
+wpb:
+  enabled: true
+  issuer: ${MOCK_PUBLIC_URL}/v1/wpb
+  client-id: local-german-wallet
+  wallet-name: German Wallet Local
+  wallet-version: local
+  wallet-solution-certification-information: local-test-only
+  wallet-link: ${MOCK_PUBLIC_URL}
+  wpb-wia-auth-key-prefix: wpb-
+  wpb-wia-root-cert-path: file:/data/ca.pem
+rwsca:
+  enabled: true
+  issuer: ${MOCK_PUBLIC_URL}/v1/rwsca
+  rwscd-master-key-prefix: master-
+  rwscd-wte-auth-key-prefix: wte-
+  rwscd-pin-symk-prefix: pin-
+  rwscd-aead-symk-prefix: aead-
+  rwscd-wte-root-cert-path: file:/data/ca.pem
+  wi-slot:
+    label: wallet-local
+    pin: "123456"
+    pool-size: 2
+pns:
+  enabled: true
+  issuer: ${MOCK_PUBLIC_URL}/v1/pns
+  push:
+    enabled: false
+  fcm:
+    enabled: false
+messaging:
+  kafka:
+    enabled: false
+hsm:
+  module-library: /usr/lib/softhsm/libsofthsm2.so
+  slot-label: wallet-local
+  slot-pin: "123456"
+  pool-size: 2
+challenge:
+  rwscd-challenge-symk-prefix: challenge-
+s3:
+  endpoint: ${S3_ENDPOINT}
+  region: us-east-1
+  bucket: wallet-certificates
+  access-key: local-wallet
+  secret-key: local-wallet-password
+ios:
+  integrity:
+    allow-skip-key-attestation: true
+    acceptable-bundle-id-list: [local.wallet]
+    allow-app-attest-dev-environment: true
+android:
+  integrity:
+    allow-skip-key-attestation: true
+    allow-software-key-attestation: true
+    expected-package-names: [local.wallet]
+    expected-signer-fingerprints: ["0000000000000000000000000000000000000000000000000000000000000000"]
+    revocation-list-resource: classpath:android/certificate-revocations.json
+statuslist:
+  enabled: true
+  public-url: ${MOCK_PUBLIC_URL}
+  path-segment: local
+  pools:
+    wpb-wia:
+      entries-per-list: 131072
+      bits-per-entry: 1
+      issuer: ${MOCK_PUBLIC_URL}/v1/wpb
+      ttl: PT1M
+      lifetime: P1D
+      tsl-auth-key-prefix: status-
+      tsl-root-cert-path: file:/data/ca.pem
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+otel:
+  traces:
+    exporter: none
+  metrics:
+    exporter: none
+  logs:
+    exporter: none

@@ -1,0 +1,10 @@
+.git
+**/.git
+docs
+config
+*.key
+*.pem
+.gradle
+.kotlin
+build
+tests
